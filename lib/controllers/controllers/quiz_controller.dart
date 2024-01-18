@@ -4,15 +4,11 @@ import 'package:pp_17/data/database/data_base.dart';
 import 'package:pp_17/data/models/quiz_entity.dart';
 
 class QuizController extends ValueNotifier<QuizControllerState> {
-  QuizController() : super(QuizControllerState.initial()) {
-    initialize();
-  }
+  QuizController(super.value);
 
   final dataBase = GetIt.instance.get<DataBase>();
 
-  void initialize() {
-    QuizControllerState.initial();
-  }
+  void startQuiz() => value = value.copyWith(status: QuizzesStatus.progress);
 
   void resetStats() {
     value = value.copyWith(
@@ -23,22 +19,10 @@ class QuizController extends ValueNotifier<QuizControllerState> {
     );
   }
 
-  void start(List<Quiz> quizzes) {
-    value = value.copyWith(
-      status: QuizzesStatus.progress,
-      quizzes: quizzes,
-      activeQuiz: quizzes[0],
-      rightAnswers: 0,
-    );
-    notifyListeners();
-  }
-
-  void incAnswers() {
-    int ans = value.rightAnswers + 1;
-    print(ans);
-    value = value.copyWith(rightAnswers: ans);
-    notifyListeners();
-  }
+  void endQuiz(int rigthAnswers) => value = value.copyWith(
+        rightAnswers: rigthAnswers,
+        status: QuizzesStatus.finish,
+      );
 
   void finishQuizzes() {
     dataBase.passEntireQuizzes();
@@ -62,20 +46,11 @@ class QuizControllerState {
   final int rightAnswers;
 
   QuizControllerState({
-    required this.status,
+    this.status = QuizzesStatus.idle,
     required this.quizzes,
-    required this.activeQuiz,
-    required this.rightAnswers,
+    this.activeQuiz,
+    this.rightAnswers = 0,
   });
-
-  factory QuizControllerState.initial() {
-    return QuizControllerState(
-      status: QuizzesStatus.idle,
-      quizzes: [],
-      activeQuiz: null,
-      rightAnswers: 0,
-    );
-  }
 
   QuizControllerState copyWith({
     QuizzesStatus? status,

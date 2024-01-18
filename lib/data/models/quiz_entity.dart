@@ -23,12 +23,13 @@ class Quiz extends HiveObject {
     required this.isPassed,
   });
 
-  Quiz copyWith(
-          {String? name,
-          String? question,
-          List<String>? answers,
-          String? rightAnswer,
-          bool? isPassed}) =>
+  Quiz copyWith({
+    String? name,
+    String? question,
+    List<String>? answers,
+    String? rightAnswer,
+    bool? isPassed,
+  }) =>
       Quiz(
         name: name ?? this.name,
         question: question ?? this.question,

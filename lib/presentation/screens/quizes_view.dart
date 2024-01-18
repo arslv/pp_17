@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pp_17/controllers/controllers/quiz_controller.dart';
 import 'package:pp_17/data/models/quiz_entity.dart';
 import 'package:pp_17/helpers/image/image_helper.dart';
@@ -18,10 +17,18 @@ class QuizzesView extends StatefulWidget {
 }
 
 class _QuizzesViewState extends State<QuizzesView> {
-  final quizController = GetIt.instance.get<QuizController>();
+  late final QuizController _quizController;
 
-  void onStartTest() {
-    quizController.start(widget.quizzes);
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
+
+  void _init() {
+    _quizController = QuizController(
+      QuizControllerState(quizzes: widget.quizzes),
+    );
   }
 
   @override
@@ -32,16 +39,17 @@ class _QuizzesViewState extends State<QuizzesView> {
         color: Theme.of(context).colorScheme.surface,
         child: SafeArea(
           child: ValueListenableBuilder(
-            valueListenable: quizController,
-            builder: (BuildContext context, QuizControllerState state, Widget? child) {
+            valueListenable: _quizController,
+            builder: (context, state, child) {
               switch (state.status) {
                 case QuizzesStatus.idle:
-                  return QuizIdleView(onStartTest: onStartTest);
+                  return QuizIdleView(
+                    startQuiz: _quizController.startQuiz,
+                  );
                 case QuizzesStatus.progress:
                   return QuizProgressView(
-                    activeQuiz: state.activeQuiz!,
-                    quizzesLength: state.quizzes.length,
-                    quizIndex: state.quizzes.indexOf(state.activeQuiz!),
+                    quizzes: state.quizzes,
+                    endQuiz: _quizController.endQuiz,
                   );
                 case QuizzesStatus.finish:
                   return QuizFinishView(
@@ -58,9 +66,12 @@ class _QuizzesViewState extends State<QuizzesView> {
 }
 
 class QuizIdleView extends StatelessWidget {
-  const QuizIdleView({super.key, required this.onStartTest});
+  const QuizIdleView({
+    super.key,
+    required this.startQuiz,
+  });
 
-  final VoidCallback onStartTest;
+  final VoidCallback startQuiz;
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +94,16 @@ class QuizIdleView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Shall we do a quiz?', style: Theme.of(context).textTheme.labelLarge),
+                    Text('Shall we do a quiz?',
+                        style: Theme.of(context).textTheme.labelLarge),
                     const SizedBox(height: 10),
                     Text(
                       'Interactive quiz, answer the questions!',
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onBackground
+                              .withOpacity(0.5)),
                     ),
                   ],
                 ),
@@ -99,14 +114,17 @@ class QuizIdleView extends StatelessWidget {
                 children: [
                   AppButton(
                     name: 'Start',
-                    callback: onStartTest,
+                    callback: startQuiz,
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     textColor: Theme.of(context).colorScheme.secondary,
                   ),
                   AppButton(
                     name: 'maybe,later',
                     textStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.5)),
                     callback: () => Navigator.of(context).pop(),
                     backgroundColor: Colors.transparent,
                     textColor: Theme.of(context).colorScheme.secondary,
@@ -122,49 +140,51 @@ class QuizIdleView extends StatelessWidget {
 }
 
 class QuizProgressView extends StatefulWidget {
-  QuizProgressView({
+  const QuizProgressView({
     super.key,
-    required this.activeQuiz,
-    required this.quizzesLength,
-    required this.quizIndex,
+    required this.quizzes,
+    required this.endQuiz,
   });
 
-  final Quiz activeQuiz;
-  final int quizzesLength;
-  final int quizIndex;
-  bool isPassed = false;
-  String selectedAnswer = '';
+  final List<Quiz> quizzes;
+  final void Function(int) endQuiz;
 
   @override
   State<QuizProgressView> createState() => _QuizProgressViewState();
 }
 
 class _QuizProgressViewState extends State<QuizProgressView> {
-  final quizController = GetIt.instance.get<QuizController>();
+  var _currentStep = 0;
 
-  void selectAnswer(String answer) {
-    if (widget.selectedAnswer.isNotEmpty) {
-      return;
+  List<Quiz> get _quizzes => widget.quizzes;
+
+  var _rigthAnswers = 0;
+
+  String? _selectedAnswer;
+
+  var _quizStatus = CurrentQuizStatus.idle;
+
+  bool get _isLastQuestion => _currentStep == _quizzes.length - 1;
+
+  Future<void> _next() async {
+    setState(() => _quizStatus = CurrentQuizStatus.answered);
+    await Future.delayed(const Duration(milliseconds: 1500));
+    if (_selectedAnswer == _quizzes[_currentStep].rightAnswer) {
+      _rigthAnswers++;
     }
-    setState(() {
-      widget.selectedAnswer = answer;
-    });
-
-    checkAnswer();
-  }
-
-  void checkAnswer() {
-    if (widget.selectedAnswer == widget.activeQuiz.rightAnswer) {
-      quizController.incAnswers();
-      setState(() {
-        widget.isPassed = true;
-      });
+    if (_isLastQuestion) {
+      widget.endQuiz.call(_rigthAnswers);
     } else {
       setState(() {
-        widget.isPassed = false;
+        _quizStatus = CurrentQuizStatus.idle;
+        _selectedAnswer = null;
+        _currentStep++;
       });
     }
   }
+
+  void _selectAnswer(String selectedAnswer) =>
+      setState(() => _selectedAnswer = selectedAnswer);
 
   @override
   Widget build(BuildContext context) {
@@ -184,50 +204,69 @@ class _QuizProgressViewState extends State<QuizProgressView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.activeQuiz.name, style: Theme.of(context).textTheme.labelLarge),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Questions ${widget.quizIndex + 1} / ${widget.quizzesLength}',
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
-                    ),
-                    const SizedBox(height: 27),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                              color: Theme.of(context).extension<CustomColors>()!.blue!)),
-                      child: Text(
-                        widget.activeQuiz.question,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(color: Theme.of(context).extension<CustomColors>()!.blue),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(_quizzes[_currentStep].name,
+                          style: Theme.of(context).textTheme.labelLarge),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Questions ${_currentStep + 1} / ${_quizzes.length}',
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onBackground
+                                .withOpacity(0.5)),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Wrap(
-                      runSpacing: 10,
-                      children: [
-                        ...widget.activeQuiz.answers.map((e) => GestureDetector(
-                              onTap: () => selectAnswer(e),
-                              child: AnswerContainer(
-                                answer: e,
-                                selectedAnswer: widget.selectedAnswer,
-                                isPassed: widget.isPassed,
-                              ),
-                            )),
-                      ],
-                    )
-                  ],
+                      const SizedBox(height: 27),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                                color: Theme.of(context)
+                                    .extension<CustomColors>()!
+                                    .blue!)),
+                        child: Text(
+                          _quizzes[_currentStep].question,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .extension<CustomColors>()!
+                                      .blue),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            final answer =
+                                _quizzes[_currentStep].answers[index];
+                            return _AnswerTile(
+                              isSelected: _selectedAnswer == answer,
+                              answer: answer,
+                              onPressed: () => _selectAnswer(answer),
+                              isAnswered:
+                                  _quizStatus == CurrentQuizStatus.answered,
+                              isRigth: _selectedAnswer ==
+                                  _quizzes[_currentStep].rightAnswer,
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 10),
+                          itemCount: _quizzes[_currentStep].answers.length,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
                 AppButton(
-                  name: widget.quizIndex + 1 < widget.quizzesLength ? 'Next' : 'Finish',
-                  callback: widget.selectedAnswer.isNotEmpty ? () => quizController.next() : null,
+                  name: _isLastQuestion ? 'Finish' : 'Next',
+                  callback: _selectedAnswer == null ? null : _next,
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   textColor: Theme.of(context).colorScheme.secondary,
                 )
@@ -240,41 +279,52 @@ class _QuizProgressViewState extends State<QuizProgressView> {
   }
 }
 
-class AnswerContainer extends StatefulWidget {
-  const AnswerContainer(
-      {super.key, required this.isPassed, required this.answer, required this.selectedAnswer});
-
-  final bool isPassed;
+class _AnswerTile extends StatelessWidget {
   final String answer;
-  final String selectedAnswer;
+  final bool isSelected;
+  final bool isAnswered;
+  final bool isRigth;
+  final VoidCallback onPressed;
+  const _AnswerTile({
+    required this.isSelected,
+    required this.answer,
+    required this.onPressed,
+    required this.isAnswered,
+    required this.isRigth,
+  });
 
-  @override
-  State<AnswerContainer> createState() => _AnswerContainerState();
-}
-
-class _AnswerContainerState extends State<AnswerContainer> {
-  final quizController = GetIt.instance.get<QuizController>();
+  Color _getTextColor() {
+    if (isSelected) {
+      if (isAnswered) {
+        if (isRigth) {
+          return Colors.green;
+        } else {
+          return Colors.red;
+        }
+      } else {
+        return Colors.black;
+      }
+    } else {
+      return Colors.yellow;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 48,
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: widget.selectedAnswer == widget.answer
-            ? widget.isPassed
-                ? Colors.green
-                : Colors.red
-            : Theme.of(context).colorScheme.secondary,
-        borderRadius: BorderRadius.circular(7),
-      ),
-      child: Text(
-        widget.answer,
-        style: Theme.of(context)
-            .textTheme
-            .displayMedium!
-            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              answer,
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    color: _getTextColor(),
+                  ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -296,7 +346,8 @@ class QuizFinishView extends StatelessWidget {
         ? ImageHelper.getImage(ImageNames.quizSuccess)
         : ImageHelper.getImage(ImageNames.quizFail);
 
-    final title = quizzesLength == rightAnswers ? 'King score!' : 'Unfortunately score!';
+    final title =
+        quizzesLength == rightAnswers ? 'King score!' : 'Unfortunately score!';
 
     final subTitle = quizzesLength == rightAnswers
         ? 'You have successfully completed the lesson, now you have access to the next one!'
@@ -322,8 +373,14 @@ class QuizFinishView extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color: quizzesLength == rightAnswers
-                                ? Theme.of(context).colorScheme.primary.withOpacity(0.7)
-                                : Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.7)
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onBackground
+                                    .withOpacity(0.7),
                             blurRadius: 25,
                           )
                         ],
@@ -337,17 +394,13 @@ class QuizFinishView extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelLarge!
-                        .copyWith(color: Theme.of(context).colorScheme.secondary),
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
                   Text(
                     subTitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.secondary),
+                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
                   Text('$rightAnswers / $quizzesLength'),
                 ],
@@ -358,11 +411,7 @@ class QuizFinishView extends StatelessWidget {
                 child: AppButton(
                   name: 'Back',
                   backgroundColor: Theme.of(context).colorScheme.primary,
-                  callback: () {
-                    final quizController = GetIt.instance.get<QuizController>();
-                    Navigator.of(context).pop();
-                    quizController.resetStats();
-                  },
+                  callback: Navigator.of(context).pop,
                   textColor: Theme.of(context).extension<CustomColors>()!.blue!,
                 ),
               )
@@ -372,4 +421,9 @@ class QuizFinishView extends StatelessWidget {
       ],
     );
   }
+}
+
+enum CurrentQuizStatus {
+  idle,
+  answered,
 }
