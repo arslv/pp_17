@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pp_17/controllers/services/navigation/route_names.dart';
-import 'package:pp_17/data/database/data_base.dart';
+import 'package:pp_17/data/database/database_service.dart';
 import 'package:pp_17/data/models/sport_card_entity.dart';
 import 'package:pp_17/presentation/widgets/app_button.dart';
 import 'package:pp_17/presentation/widgets/sport_card.dart';
@@ -16,7 +16,7 @@ class SportCardsView extends StatefulWidget {
 
 class _SportCardsViewState extends State<SportCardsView> {
   var sportCards = <SportCard>[];
-  final dataBase = GetIt.instance.get<DataBase>();
+  final dataBase = GetIt.instance.get<DatabaseService>();
 
   void loadCards() {
     sportCards = dataBase.sportCards;

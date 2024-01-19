@@ -1,3 +1,4 @@
 class DatabaseKeys {
-  static const String isFirstLaunch = 'isFirstLaunch';
+  static const seenOnboarding = 'seenOnboarding';
+  static const acceptedPrivacy = 'acceptedPrivacy';
 }

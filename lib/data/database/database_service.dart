@@ -9,12 +9,12 @@ import 'package:pp_17/enums/sport_type.dart';
 import 'package:pp_17/helpers/image/news_text.dart';
 import 'package:pp_17/helpers/lessons_text.dart';
 
-class DataBase {
+class DatabaseService {
   late final Box _common;
   late final Box<SportCard> _sportCards;
   late final Box<News> _news;
 
-  init() async {
+  Future<DatabaseService> init() async {
     await Hive.initFlutter();
     final appDirectory = await getApplicationDocumentsDirectory();
     Hive.init(appDirectory.path);
@@ -32,6 +32,8 @@ class DataBase {
 
     setupSportCards();
     setupNews();
+
+    return this;
   }
 
   void setupNews() {
@@ -63,7 +65,8 @@ class DataBase {
           quizzes: [
             Quiz(
               name: 'Football history, great beginning',
-              question: 'Какое количество игроков составляет команду в футболе?',
+              question:
+                  'Какое количество игроков составляет команду в футболе?',
               answers: ['7', '9', '11', '13'],
               rightAnswer: '11',
               isPassed: false,
@@ -79,7 +82,12 @@ class DataBase {
             Quiz(
               name: 'Football history, great beginning',
               question: 'Какой игрок считается лучшим футболистом всех времен?',
-              answers: ['Лионель Месси', 'Криштиану Роналду', 'Пеле', 'Диего Марадона'],
+              answers: [
+                'Лионель Месси',
+                'Криштиану Роналду',
+                'Пеле',
+                'Диего Марадона'
+              ],
               rightAnswer: 'Пеле',
               isPassed: false,
             ),
@@ -95,7 +103,12 @@ class DataBase {
               name: 'Football history, great beginning',
               question:
                   'Какой футбольный клуб является рекордсменом по количеству побед в Лиге чемпионов УЕФА?',
-              answers: ['Реал Мадрид', 'Барселона', 'Манчестер Юнайтед', 'Бавария Мюнхен'],
+              answers: [
+                'Реал Мадрид',
+                'Барселона',
+                'Манчестер Юнайтед',
+                'Бавария Мюнхен'
+              ],
               rightAnswer: 'Реал Мадрид',
               isPassed: false,
             ),
@@ -106,7 +119,8 @@ class DataBase {
   }
 
   void passLesson(Lesson lesson) {
-    SportCard card = _sportCards.values.firstWhere((sportCard) => sportCard.lesson == lesson);
+    SportCard card = _sportCards.values
+        .firstWhere((sportCard) => sportCard.lesson == lesson);
     int indexOfCard = _sportCards.values.toList().indexOf(card);
     Lesson passedCardLesson = card.lesson.copyWith(isPassed: true);
 
@@ -116,22 +130,23 @@ class DataBase {
   }
 
   void completeQuizzesTest(List<Quiz> quizzes, int quizProgress) {
-    SportCard card = _sportCards.values.firstWhere((sportCard) => sportCard.quizzes == quizzes);
+    SportCard card = _sportCards.values
+        .firstWhere((sportCard) => sportCard.quizzes == quizzes);
     int indexOfCard = _sportCards.values.toList().indexOf(card);
 
     if (quizProgress == 100) {
       card = card.copyWith(quizStatus: QuizStatus.completed, quizProgress: 100);
     } else {
-      card = card.copyWith(quizStatus: QuizStatus.fail, quizProgress: quizProgress);
+      card = card.copyWith(
+          quizStatus: QuizStatus.fail, quizProgress: quizProgress);
     }
-
 
     putCard(indexOfCard, card);
   }
 
   void passTest(Quiz quiz) {
-    final SportCard card =
-        _sportCards.values.firstWhere((sportCard) => sportCard.quizzes.contains(quiz));
+    final SportCard card = _sportCards.values
+        .firstWhere((sportCard) => sportCard.quizzes.contains(quiz));
     if (!quiz.isPassed) {
       card.quizzes.remove(quiz);
       quiz = quiz.copyWith(isPassed: true);
@@ -140,9 +155,7 @@ class DataBase {
     card.save();
   }
 
-  void passEntireQuiz() {
-
-  }
+  void passEntireQuiz() {}
 
   List<SportCard> get sportCards => _sportCards.values.toList();
 

@@ -8,13 +8,13 @@ import 'package:pp_17/presentation/screens/lesson_view.dart';
 import 'package:pp_17/presentation/screens/main_screen_view.dart';
 import 'package:pp_17/presentation/screens/news_view.dart';
 import 'package:pp_17/presentation/screens/onboarding.dart';
+import 'package:pp_17/presentation/screens/privacy_view.dart';
 import 'package:pp_17/presentation/screens/quizes_view.dart';
 import 'package:pp_17/presentation/screens/splash_view.dart';
 import 'package:pp_17/presentation/screens/sport_cards_view.dart';
 import 'package:pp_17/presentation/screens/support_view.dart';
 
 typedef ScreenBuilding = Widget Function(BuildContext context);
-
 
 class Routes {
   static Map<String, ScreenBuilding> get(BuildContext context) {
@@ -25,12 +25,14 @@ class Routes {
       RouteNames.onboarding: (context) => const OnboardingView(),
       RouteNames.cards: (context) => const SportCardsView(),
       RouteNames.lesson: (context) {
-        final sportCard = ModalRoute.of(context)!.settings.arguments as SportCard;
+        final sportCard =
+            ModalRoute.of(context)!.settings.arguments as SportCard;
 
         return LessonView(sportCard: sportCard);
       },
       RouteNames.quizzes: (context) {
-        final quizzes = ModalRoute.of(context)!.settings.arguments as List<Quiz>;
+        final quizzes =
+            ModalRoute.of(context)!.settings.arguments as List<Quiz>;
 
         return QuizzesView(quizzes: quizzes);
       },
@@ -40,6 +42,7 @@ class Routes {
         return NewsView(news: news);
       },
       RouteNames.support: (context) => const SupportView(),
+      RouteNames.privacy: (context) => const PrivacyView(),
     };
   }
 }

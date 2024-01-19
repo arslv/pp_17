@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pp_17/controllers/controllers/lesson_controller.dart';
-import 'package:pp_17/data/database/data_base.dart';
+import 'package:pp_17/data/database/database_service.dart';
 import 'package:pp_17/data/models/news_model.dart';
 import 'package:pp_17/helpers/image/image_helper.dart';
 import 'package:pp_17/presentation/themes/custom_colors.dart';
@@ -18,7 +16,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   late final LessonController _lessonController;
-  final dataBase = GetIt.instance.get<DataBase>();
+  final dataBase = GetIt.instance.get<DatabaseService>();
 
   void init() {
     _lessonController = LessonController();
@@ -192,7 +190,7 @@ class NewsCards extends StatefulWidget {
 }
 
 class _NewsCardsState extends State<NewsCards> {
-  final dataBase = GetIt.instance.get<DataBase>();
+  final dataBase = GetIt.instance.get<DatabaseService>();
   late final List<News> news;
 
   @override

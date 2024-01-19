@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pp_17/controllers/services/navigation/route_names.dart';
+import 'package:pp_17/data/database/database_keys.dart';
+import 'package:pp_17/data/database/database_service.dart';
 import 'package:pp_17/helpers/image/image_helper.dart';
 
 class OnboardingView extends StatefulWidget {
@@ -11,6 +13,8 @@ class OnboardingView extends StatefulWidget {
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
+  final _databaseService = GetIt.instance<DatabaseService>();
+
   int currentStep = 0;
 
   final images = [
@@ -23,7 +27,8 @@ class _OnboardingViewState extends State<OnboardingView> {
   final Map<int, Map<String, String>> _stepsInfo = {
     0: {
       'title': 'LETS GET STARTED',
-      'subtitle': 'Lorem ipsum dolor sit amet consectetur. ut risus ut iaculis neque vitae arcu.'
+      'subtitle':
+          'Lorem ipsum dolor sit amet consectetur. ut risus ut iaculis neque vitae arcu.'
     },
     1: {
       'title': 'WATCH YOUR STATS!',
@@ -35,12 +40,24 @@ class _OnboardingViewState extends State<OnboardingView> {
     },
     3: {
       'title': 'LEARN ALL ABOUT YOUR FAVORITE SPORT!',
-      'subtitle': 'Join us and become a true champion in the realm of sports quizzes!'
+      'subtitle':
+          'Join us and become a true champion in the realm of sports quizzes!'
     },
   };
 
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
+
+  void _init() {
+    _databaseService.put(DatabaseKeys.seenOnboarding, true);
+  }
+
   Map<String, String> getStepInfo(int step) {
-    return _stepsInfo[step] ?? {'title': 'Default Title', 'subtitle': 'Default Subtitle'};
+    return _stepsInfo[step] ??
+        {'title': 'Default Title', 'subtitle': 'Default Subtitle'};
   }
 
   void increaseStep() {
@@ -82,7 +99,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                 Text(
                   getStepInfo(currentStep)['subtitle'] ?? 'Default Subtitle',
                   style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onPrimary
+                            .withOpacity(0.5),
                       ),
                 ),
               ],

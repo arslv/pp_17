@@ -8,4 +8,5 @@ class RouteNames {
   static const quizzes = '/quizzes';
   static const news = '/news';
   static const support = '/support';
+  static const privacy = '/privacy';
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pp_17/data/database/data_base.dart';
+import 'package:pp_17/data/database/database_service.dart';
 import 'package:pp_17/data/models/sport_card_entity.dart';
 
 class LessonController extends ValueNotifier<LessonControllerState> {
@@ -10,7 +10,7 @@ class LessonController extends ValueNotifier<LessonControllerState> {
 
   int get lessonPassedCount => value.lessonsPassed;
 
-  final dataBase = GetIt.instance.get<DataBase>();
+  final dataBase = GetIt.instance.get<DatabaseService>();
 
   void passLesson(SportCard card) {
     dataBase.passLesson(card.lesson);

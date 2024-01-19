@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pp_17/data/database/data_base.dart';
+import 'package:pp_17/data/database/database_service.dart';
 import 'package:pp_17/data/models/quiz_entity.dart';
 
 class QuizController extends ValueNotifier<QuizControllerState> {
   QuizController(super.value);
 
-  final dataBase = GetIt.instance.get<DataBase>();
+  final dataBase = GetIt.instance.get<DatabaseService>();
 
   void startQuiz() => value = value.copyWith(status: QuizzesStatus.progress);
 
