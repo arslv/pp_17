@@ -25,7 +25,10 @@ class QuizController extends ValueNotifier<QuizControllerState> {
       status: QuizzesStatus.finish,
     );
     notifyListeners();
-    dataBase.completeQuizzesTest(value.quizzes, (5 / rightAnswers * 100).round());
+
+    final quizProgress = rightAnswers != 0 ? ((5 / rightAnswers) * 100).round() : 0;
+
+    dataBase.completeQuizzesTest(value.quizzes, quizProgress);
   }
 
   void next() {

@@ -134,6 +134,11 @@ class DatabaseService {
         .firstWhere((sportCard) => sportCard.quizzes == quizzes);
     int indexOfCard = _sportCards.values.toList().indexOf(card);
 
+
+    if (card.quizStatus == QuizStatus.completed) {
+      return;
+    }
+
     if (quizProgress == 100) {
       card = card.copyWith(quizStatus: QuizStatus.completed, quizProgress: 100);
     } else {
