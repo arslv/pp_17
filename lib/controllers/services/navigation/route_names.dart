@@ -7,4 +7,5 @@ class RouteNames {
   static const lesson = '/lesson';
   static const quizzes = '/quizzes';
   static const news = '/news';
+  static const support = '/support';
 }

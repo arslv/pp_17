@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pp_17/data/database/data_base.dart';
-import 'package:pp_17/data/models/quiz_entity.dart';
 import 'package:pp_17/data/models/sport_card_entity.dart';
 
 class LessonController extends ValueNotifier<LessonControllerState> {
@@ -9,37 +8,45 @@ class LessonController extends ValueNotifier<LessonControllerState> {
     initialize();
   }
 
-  int get lessonPassedCount => value.lessonPassed;
+  int get lessonPassedCount => value.lessonsPassed;
 
   final dataBase = GetIt.instance.get<DataBase>();
 
   void passLesson(SportCard card) {
     dataBase.passLesson(card.lesson);
     notifyListeners();
+    initPassedLessons();
+  }
+
+  void initPassedLessons() {
+    int passedLessonsCount = dataBase.lessonsPassed;
+    value = value.copyWith(lessonsPassed: passedLessonsCount);
+    notifyListeners();
   }
 
   void initialize() {
     LessonControllerState.initial();
+    initPassedLessons();
   }
 }
 
 class LessonControllerState {
-  final int lessonPassed;
+  final int lessonsPassed;
 
   LessonControllerState({
-    required this.lessonPassed,
+    required this.lessonsPassed,
   });
 
   factory LessonControllerState.initial() {
     return LessonControllerState(
-      lessonPassed: 0,
+      lessonsPassed: 0,
     );
   }
 
   LessonControllerState copyWith({
-    int? lessonPassed,
+    int? lessonsPassed,
   }) =>
       LessonControllerState(
-        lessonPassed: lessonPassed ?? this.lessonPassed,
+        lessonsPassed: lessonsPassed ?? this.lessonsPassed,
       );
 }

@@ -56,7 +56,7 @@ class SportCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 FillableDivider(
-                  fillPercentage: 90,
+                  fillPercentage: sportCard.quizProgress,
                   width: 124,
                   color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
                   filledColor: Theme.of(context).colorScheme.onPrimary,

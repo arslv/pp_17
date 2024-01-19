@@ -11,6 +11,7 @@ import 'package:pp_17/presentation/screens/onboarding.dart';
 import 'package:pp_17/presentation/screens/quizes_view.dart';
 import 'package:pp_17/presentation/screens/splash_view.dart';
 import 'package:pp_17/presentation/screens/sport_cards_view.dart';
+import 'package:pp_17/presentation/screens/support_view.dart';
 
 typedef ScreenBuilding = Widget Function(BuildContext context);
 
@@ -38,6 +39,7 @@ class Routes {
 
         return NewsView(news: news);
       },
+      RouteNames.support: (context) => const SupportView(),
     };
   }
 }

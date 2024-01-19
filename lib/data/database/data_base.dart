@@ -115,8 +115,18 @@ class DataBase {
     putCard(indexOfCard, card);
   }
 
-  void passEntireQuizzes() {
+  void completeQuizzesTest(List<Quiz> quizzes, int quizProgress) {
+    SportCard card = _sportCards.values.firstWhere((sportCard) => sportCard.quizzes == quizzes);
+    int indexOfCard = _sportCards.values.toList().indexOf(card);
 
+    if (quizProgress == 100) {
+      card = card.copyWith(quizStatus: QuizStatus.completed, quizProgress: 100);
+    } else {
+      card = card.copyWith(quizStatus: QuizStatus.fail, quizProgress: quizProgress);
+    }
+
+
+    putCard(indexOfCard, card);
   }
 
   void passTest(Quiz quiz) {
@@ -130,9 +140,33 @@ class DataBase {
     card.save();
   }
 
+  void passEntireQuiz() {
+
+  }
+
   List<SportCard> get sportCards => _sportCards.values.toList();
 
   List<News> get news => _news.values.toList();
+
+  int get lessonsPassed {
+    var count = 0;
+    for (var element in sportCards) {
+      if (element.lesson.isPassed) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  int get quizzesPassed {
+    var count = 0;
+    for (var element in sportCards) {
+      if (element.quizStatus == QuizStatus.completed) {
+        count++;
+      }
+    }
+    return count;
+  }
 
   void put(String key, dynamic value) => _common.put(key, value);
 

@@ -84,9 +84,9 @@ class DefaultThemeGetter {
           letterSpacing: 0.5,
         ),
         bodySmall: GoogleFonts.tourney(
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w900,
           fontSize: 12.0,
-          height: 1.0,
+          height: 1.2,
         ),
       ).apply(
         bodyColor: onBackground,

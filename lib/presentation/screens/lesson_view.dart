@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pp_17/controllers/controllers/lesson_controller.dart';
 import 'package:pp_17/controllers/services/navigation/route_names.dart';
 import 'package:pp_17/data/models/sport_card_entity.dart';
@@ -19,10 +18,10 @@ class LessonView extends StatefulWidget {
 class _LessonViewState extends State<LessonView> {
   var steps = <LessonStep>[];
   var currentStep = 0;
+  late final LessonController _lessonController;
 
-  final lessonController = GetIt.instance.get<LessonController>();
-
-  void _loadSteps() {
+  void init() {
+    _lessonController = LessonController();
     steps = widget.sportCard.lesson.splitTextIntoSteps(300);
   }
 
@@ -32,7 +31,9 @@ class _LessonViewState extends State<LessonView> {
         currentStep += 1;
       });
     } else if (currentStep + 1 == steps.length) {
-      lessonController.passLesson(widget.sportCard);
+      if (!widget.sportCard.lesson.isPassed) {
+        _lessonController.passLesson(widget.sportCard);
+      }
       Navigator.of(context)
           .pushReplacementNamed(RouteNames.quizzes, arguments: widget.sportCard.quizzes);
     }
@@ -50,7 +51,7 @@ class _LessonViewState extends State<LessonView> {
 
   @override
   void initState() {
-    _loadSteps();
+    init();
     super.initState();
   }
 

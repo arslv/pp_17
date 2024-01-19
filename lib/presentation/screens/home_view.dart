@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pp_17/controllers/controllers/lesson_controller.dart';
 import 'package:pp_17/data/database/data_base.dart';
 import 'package:pp_17/data/models/news_model.dart';
 import 'package:pp_17/helpers/image/image_helper.dart';
 import 'package:pp_17/presentation/themes/custom_colors.dart';
 import 'package:pp_17/presentation/widgets/news_card.dart';
-import 'package:pp_17/presentation/widgets/sport_card.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -17,15 +17,34 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  late final LessonController _lessonController;
+  final dataBase = GetIt.instance.get<DataBase>();
+
+  void init() {
+    _lessonController = LessonController();
+  }
+
+  Map<String, String> get parsePassedQuizToTime {
+    final countPassedQuiz = dataBase.quizzesPassed;
+    String hours = (countPassedQuiz * 20 / 60).toStringAsFixed(0);
+    String minutes = (countPassedQuiz * 20 % 60).toStringAsFixed(0);
+
+    return {hours: minutes};
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height
-          ),
+          constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
           padding: const EdgeInsets.only(left: 20, right: 20, top: 64),
           color: Theme.of(context).colorScheme.surface,
           child: Column(
@@ -41,7 +60,10 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               const SizedBox(height: 10),
-              const StatsView(),
+              StatsView(
+                lessonsPassed: _lessonController.lessonPassedCount,
+                totalStats: parsePassedQuizToTime,
+              ),
               const SizedBox(height: 20),
               const NewsCards(),
             ],
@@ -53,7 +75,10 @@ class _HomeViewState extends State<HomeView> {
 }
 
 class StatsView extends StatelessWidget {
-  const StatsView({super.key});
+  const StatsView({super.key, required this.lessonsPassed, required this.totalStats});
+
+  final int lessonsPassed;
+  final Map<String, String> totalStats;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +117,7 @@ class StatsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text.rich(TextSpan(
-                      text: '100\'',
+                      text: '${totalStats.keys.elementAt(0)}\'',
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
@@ -106,7 +131,7 @@ class StatsView extends StatelessWidget {
                       ])),
                   const SizedBox(height: 5),
                   Text.rich(TextSpan(
-                      text: '50\'',
+                      text: '${totalStats.values.elementAt(0)}\'',
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
@@ -128,48 +153,27 @@ class StatsView extends StatelessWidget {
                   image: DecorationImage(
                       image: ImageHelper.getImage(ImageNames.lessonsBg).image, fit: BoxFit.cover)),
               child: Stack(
+                alignment: Alignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 6, top: 6),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Text.rich(
-                        TextSpan(
-                            text: '10/50\n',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            children: [
-                              TextSpan(
-                                text: 'lessons',
-                                style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary.withOpacity(0.5)),
-                              )
-                            ]),
-                        textAlign: TextAlign.center,
-                      ),
+                    child: Text.rich(
+                      TextSpan(
+                          text: '$lessonsPassed/20\n',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                          children: [
+                            TextSpan(
+                              text: 'lessons',
+                              style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                                  color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5)),
+                            )
+                          ]),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, bottom: 12),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Row(
-                          children: [
-                            Text(
-                              'FOOTBALL',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            ),
-                            const SizedBox(width: 5),
-                            ImageHelper.svgImage(SvgNames.soccer, width: 15, height: 15)
-                          ],
-                        )),
-                  )
                 ],
               ),
             )
@@ -213,13 +217,9 @@ class _NewsCardsState extends State<NewsCards> {
         ),
         const SizedBox(height: 10),
         Column(
-          children: [
-            ...news.map((e) => NewsWidget(news: e))
-          ],
+          children: [...news.map((e) => NewsWidget(news: e))],
         )
       ],
     );
   }
 }
-
-

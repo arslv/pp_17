@@ -94,16 +94,12 @@ class QuizIdleView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Shall we do a quiz?',
-                        style: Theme.of(context).textTheme.labelLarge),
+                    Text('Shall we do a quiz?', style: Theme.of(context).textTheme.labelLarge),
                     const SizedBox(height: 10),
                     Text(
                       'Interactive quiz, answer the questions!',
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onBackground
-                              .withOpacity(0.5)),
+                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
                     ),
                   ],
                 ),
@@ -121,10 +117,7 @@ class QuizIdleView extends StatelessWidget {
                   AppButton(
                     name: 'maybe,later',
                     textStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onBackground
-                            .withOpacity(0.5)),
+                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
                     callback: () => Navigator.of(context).pop(),
                     backgroundColor: Colors.transparent,
                     textColor: Theme.of(context).colorScheme.secondary,
@@ -158,7 +151,7 @@ class _QuizProgressViewState extends State<QuizProgressView> {
 
   List<Quiz> get _quizzes => widget.quizzes;
 
-  var _rigthAnswers = 0;
+  var _rightAnswers = 0;
 
   String? _selectedAnswer;
 
@@ -170,10 +163,10 @@ class _QuizProgressViewState extends State<QuizProgressView> {
     setState(() => _quizStatus = CurrentQuizStatus.answered);
     await Future.delayed(const Duration(milliseconds: 1500));
     if (_selectedAnswer == _quizzes[_currentStep].rightAnswer) {
-      _rigthAnswers++;
+      _rightAnswers++;
     }
     if (_isLastQuestion) {
-      widget.endQuiz.call(_rigthAnswers);
+      widget.endQuiz.call(_rightAnswers);
     } else {
       setState(() {
         _quizStatus = CurrentQuizStatus.idle;
@@ -183,8 +176,7 @@ class _QuizProgressViewState extends State<QuizProgressView> {
     }
   }
 
-  void _selectAnswer(String selectedAnswer) =>
-      setState(() => _selectedAnswer = selectedAnswer);
+  void _selectAnswer(String selectedAnswer) => setState(() => _selectedAnswer = selectedAnswer);
 
   @override
   Widget build(BuildContext context) {
@@ -214,50 +206,37 @@ class _QuizProgressViewState extends State<QuizProgressView> {
                       Text(
                         'Questions ${_currentStep + 1} / ${_quizzes.length}',
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onBackground
-                                .withOpacity(0.5)),
+                            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
                       ),
                       const SizedBox(height: 27),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                                color: Theme.of(context)
-                                    .extension<CustomColors>()!
-                                    .blue!)),
+                                color: Theme.of(context).extension<CustomColors>()!.blue!)),
                         child: Text(
                           _quizzes[_currentStep].question,
                           style: Theme.of(context)
                               .textTheme
                               .labelMedium!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CustomColors>()!
-                                      .blue),
+                              .copyWith(color: Theme.of(context).extension<CustomColors>()!.blue),
                         ),
                       ),
                       const SizedBox(height: 20),
                       Expanded(
                         child: ListView.separated(
                           itemBuilder: (context, index) {
-                            final answer =
-                                _quizzes[_currentStep].answers[index];
+                            final answer = _quizzes[_currentStep].answers[index];
                             return _AnswerTile(
                               isSelected: _selectedAnswer == answer,
                               answer: answer,
                               onPressed: () => _selectAnswer(answer),
-                              isAnswered:
-                                  _quizStatus == CurrentQuizStatus.answered,
-                              isRigth: _selectedAnswer ==
-                                  _quizzes[_currentStep].rightAnswer,
+                              isAnswered: _quizStatus == CurrentQuizStatus.answered,
+                              isRigth: _selectedAnswer == _quizzes[_currentStep].rightAnswer,
                             );
                           },
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 10),
+                          separatorBuilder: (context, index) => const SizedBox(height: 10),
                           itemCount: _quizzes[_currentStep].answers.length,
                         ),
                       )
@@ -266,7 +245,11 @@ class _QuizProgressViewState extends State<QuizProgressView> {
                 ),
                 AppButton(
                   name: _isLastQuestion ? 'Finish' : 'Next',
-                  callback: _selectedAnswer == null ? null : _next,
+                  callback: _quizStatus == CurrentQuizStatus.idle
+                      ? _selectedAnswer == null
+                          ? null
+                          : _next
+                      : null,
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   textColor: Theme.of(context).colorScheme.secondary,
                 )
@@ -285,6 +268,7 @@ class _AnswerTile extends StatelessWidget {
   final bool isAnswered;
   final bool isRigth;
   final VoidCallback onPressed;
+
   const _AnswerTile({
     required this.isSelected,
     required this.answer,
@@ -293,40 +277,40 @@ class _AnswerTile extends StatelessWidget {
     required this.isRigth,
   });
 
-  Color _getTextColor() {
+  Color _getTextColor(BuildContext context) {
     if (isSelected) {
       if (isAnswered) {
         if (isRigth) {
-          return Colors.green;
+          return Theme.of(context).extension<CustomColors>()!.green!;
         } else {
-          return Colors.red;
+          return Theme.of(context).extension<CustomColors>()!.red!;
         }
       } else {
-        return Colors.black;
+        return Theme.of(context).colorScheme.secondary.withOpacity(0.5);
       }
     } else {
-      return Colors.yellow;
+      return Theme.of(context).colorScheme.secondary;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              answer,
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    color: _getTextColor(),
-                  ),
-            ),
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration:
+              BoxDecoration(borderRadius: BorderRadius.circular(7), color: _getTextColor(context)),
+          width: double.infinity,
+          child: Text(
+            answer,
+            style: Theme.of(context)
+                .textTheme
+                .displayMedium!
+                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
 
@@ -346,8 +330,7 @@ class QuizFinishView extends StatelessWidget {
         ? ImageHelper.getImage(ImageNames.quizSuccess)
         : ImageHelper.getImage(ImageNames.quizFail);
 
-    final title =
-        quizzesLength == rightAnswers ? 'King score!' : 'Unfortunately score!';
+    final title = quizzesLength == rightAnswers ? 'King score!' : 'Unfortunately score!';
 
     final subTitle = quizzesLength == rightAnswers
         ? 'You have successfully completed the lesson, now you have access to the next one!'
@@ -365,45 +348,48 @@ class QuizFinishView extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(flex: 1),
-              Column(
-                children: [
-                  Stack(alignment: Alignment.center, children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: quizzesLength == rightAnswers
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.7)
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onBackground
-                                    .withOpacity(0.7),
-                            blurRadius: 25,
-                          )
-                        ],
-                        borderRadius: BorderRadius.circular(999),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Stack(alignment: Alignment.center, children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: quizzesLength == rightAnswers
+                                  ? Theme.of(context).colorScheme.primary.withOpacity(0.7)
+                                  : Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                              blurRadius: 25,
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        width: 232,
+                        height: 232,
                       ),
-                      width: 232,
-                      height: 232,
+                      finishImage,
+                    ]),
+                    const SizedBox(height: 10),
+                    Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge!
+                          .copyWith(color: Theme.of(context).colorScheme.secondary),
                     ),
-                    finishImage,
-                  ]),
-                  const SizedBox(height: 10),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
-                  Text(
-                    subTitle,
-                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
-                  Text('$rightAnswers / $quizzesLength'),
-                ],
+                    const SizedBox(height: 10),
+                    Text(
+                      subTitle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith(color: Theme.of(context).colorScheme.secondary),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text('$rightAnswers / $quizzesLength'),
+                  ],
+                ),
               ),
               const Spacer(flex: 1),
               Padding(

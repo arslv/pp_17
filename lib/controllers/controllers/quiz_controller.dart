@@ -19,13 +19,13 @@ class QuizController extends ValueNotifier<QuizControllerState> {
     );
   }
 
-  void endQuiz(int rigthAnswers) => value = value.copyWith(
-        rightAnswers: rigthAnswers,
-        status: QuizzesStatus.finish,
-      );
-
-  void finishQuizzes() {
-    dataBase.passEntireQuizzes();
+  void endQuiz(int rightAnswers) {
+    value = value.copyWith(
+      rightAnswers: rightAnswers,
+      status: QuizzesStatus.finish,
+    );
+    notifyListeners();
+    dataBase.completeQuizzesTest(value.quizzes, (5 / rightAnswers * 100).round());
   }
 
   void next() {

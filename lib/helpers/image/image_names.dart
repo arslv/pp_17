@@ -33,4 +33,8 @@ class SvgNames {
 
   static const chevronLeft = 'left_chevron';
 
+  static const privacy = 'privacy';
+  static const terms = 'terms';
+  static const heart = 'heart';
+  static const headphones = 'headphones';
 }
