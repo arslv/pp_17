@@ -16,6 +16,12 @@ class ImageNames {
   static const lessonsBg = 'lessons_bg';
 
   static const footballCard = 'football_card';
+
+  //news
+  // static const newsFootball = 'news_football';
+  // static const iconFootball = 'icon_football';
+
+
 }
 
 class SvgNames {

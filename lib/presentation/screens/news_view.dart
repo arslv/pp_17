@@ -14,6 +14,7 @@ class NewsView extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
           padding: const EdgeInsets.all(20),
           color: Theme.of(context).colorScheme.surface,
           child: SafeArea(
@@ -37,18 +38,26 @@ class NewsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 33),
                 Text(
+                  news.stringDateTime,
+                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
+                const SizedBox(height: 20),
+                Text(
                   news.title,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
                       .copyWith(color: Theme.of(context).extension<CustomColors>()!.blue),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Text(
                   news.text,
                   style: Theme.of(context)
                       .textTheme
-                      .displaySmall!
+                      .displayMedium!
                       .copyWith(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5)),
                 )
               ],

@@ -12,7 +12,7 @@ enum SportType {
   @HiveField(5) hockey,
   @HiveField(6) volleyball,
   @HiveField(7) boxing,
-  @HiveField(8) struggle,
+  @HiveField(8) wrestling,
   @HiveField(9) swimming,
   @HiveField(10) athletics,
   @HiveField(11) gymnastics,

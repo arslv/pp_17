@@ -21,13 +21,14 @@ class NewsAdapter extends TypeAdapter<News> {
       text: fields[1] as String,
       imagePath: fields[2] as String,
       iconPath: fields[3] as String,
+      stringDateTime: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, News obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class NewsAdapter extends TypeAdapter<News> {
       ..writeByte(2)
       ..write(obj.imagePath)
       ..writeByte(3)
-      ..write(obj.iconPath);
+      ..write(obj.iconPath)
+      ..writeByte(4)
+      ..write(obj.stringDateTime);
   }
 
   @override

@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pp_17/controllers/services/navigation/route_names.dart';
 import 'package:pp_17/data/models/news_model.dart';
-import 'package:pp_17/helpers/image/image_helper.dart';
-import 'package:pp_17/presentation/widgets/fillable_divider.dart';
 
 class NewsWidget extends StatelessWidget {
   const NewsWidget({super.key, required this.news});
@@ -37,6 +35,7 @@ class NewsWidget extends StatelessWidget {
                 maxLines: 3,
               ),
             ),
+            const SizedBox(width: 30),
             Expanded(
               flex: 1,
               child: Image(

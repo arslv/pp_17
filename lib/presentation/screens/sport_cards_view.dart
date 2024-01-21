@@ -65,6 +65,7 @@ class _SportCardsViewState extends State<SportCardsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Container(
           constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height
@@ -87,6 +88,7 @@ class _SportCardsViewState extends State<SportCardsView> {
               ),
               GridView.builder(
                 shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
                 itemCount: sportCards.length,
                 itemBuilder: (BuildContext context, int index) {
                   return SportCardWidget(

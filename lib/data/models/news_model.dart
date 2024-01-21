@@ -12,13 +12,29 @@ class News extends HiveObject {
   final String imagePath;
   @HiveField(3)
   final String iconPath;
+  @HiveField(4)
+  final String stringDateTime;
 
-  News({required this.title, required this.text, required this.imagePath, required this.iconPath});
+  News({
+    required this.title,
+    required this.text,
+    required this.imagePath,
+    required this.iconPath,
+    required this.stringDateTime,
+  });
 
-  News copyWith({String? title, String? text, String? imagePath, String? iconPath}) => News(
+  News copyWith({
+    String? title,
+    String? text,
+    String? imagePath,
+    String? iconPath,
+    String? stringDateTime,
+  }) =>
+      News(
         title: title ?? this.title,
         text: text ?? this.text,
         imagePath: imagePath ?? this.imagePath,
         iconPath: iconPath ?? this.iconPath,
+        stringDateTime: stringDateTime ?? this.stringDateTime,
       );
 }

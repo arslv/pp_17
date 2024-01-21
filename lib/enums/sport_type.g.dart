@@ -30,7 +30,7 @@ class SportTypeAdapter extends TypeAdapter<SportType> {
       case 7:
         return SportType.boxing;
       case 8:
-        return SportType.struggle;
+        return SportType.wrestling;
       case 9:
         return SportType.swimming;
       case 10:
@@ -85,7 +85,7 @@ class SportTypeAdapter extends TypeAdapter<SportType> {
       case SportType.boxing:
         writer.writeByte(7);
         break;
-      case SportType.struggle:
+      case SportType.wrestling:
         writer.writeByte(8);
         break;
       case SportType.swimming:

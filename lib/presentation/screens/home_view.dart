@@ -215,7 +215,10 @@ class _NewsCardsState extends State<NewsCards> {
         ),
         const SizedBox(height: 10),
         Column(
-          children: [...news.map((e) => NewsWidget(news: e))],
+          children: [
+            ...news.map((e) =>
+                Container(margin: const EdgeInsets.only(bottom: 20), child: NewsWidget(news: e)))
+          ],
         )
       ],
     );
