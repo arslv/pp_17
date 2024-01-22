@@ -9,4 +9,5 @@ class RouteNames {
   static const news = '/news';
   static const support = '/support';
   static const privacy = '/privacy';
+  static const privacyAndTerms = '/privacyAndTerms';
 }

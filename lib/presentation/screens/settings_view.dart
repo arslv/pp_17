@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:pp_17/controllers/services/navigation/route_names.dart';
 import 'package:pp_17/helpers/image/image_helper.dart';
-import 'package:pp_17/presentation/themes/custom_colors.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -14,38 +13,6 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final InAppReview inAppReview = InAppReview.instance;
-
-  void _showTermsOrPrivacy({required bool isPrivacy}) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isPrivacy ? 'Privacy policy' : 'Terms of use',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Theme.of(context).extension<CustomColors>()!.blue),
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      Text('VERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXTVERYLONGTEXT')
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
-        });
-  }
 
   Future<void> _requestReview() async {
     final bool isAvailable = await inAppReview.isAvailable();
@@ -91,7 +58,7 @@ class _SettingsViewState extends State<SettingsView> {
                             child: CupertinoButton(
                               padding: EdgeInsets.zero,
                               minSize: 180,
-                              onPressed: () => _showTermsOrPrivacy(isPrivacy: true),
+                              onPressed: () => Navigator.of(context).pushNamed(RouteNames.privacyAndTerms, arguments: false),
                               color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -120,7 +87,7 @@ class _SettingsViewState extends State<SettingsView> {
                             child: CupertinoButton(
                               padding: EdgeInsets.zero,
                               minSize: 180,
-                              onPressed: () => _showTermsOrPrivacy(isPrivacy: false),
+                              onPressed: () => Navigator.of(context).pushNamed(RouteNames.privacyAndTerms, arguments: true),
                               color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -8,6 +8,7 @@ import 'package:pp_17/presentation/screens/lesson_view.dart';
 import 'package:pp_17/presentation/screens/main_screen_view.dart';
 import 'package:pp_17/presentation/screens/news_view.dart';
 import 'package:pp_17/presentation/screens/onboarding.dart';
+import 'package:pp_17/presentation/screens/privacy_temrs_view.dart';
 import 'package:pp_17/presentation/screens/privacy_view.dart';
 import 'package:pp_17/presentation/screens/quizes_view.dart';
 import 'package:pp_17/presentation/screens/splash_view.dart';
@@ -25,14 +26,12 @@ class Routes {
       RouteNames.onboarding: (context) => const OnboardingView(),
       RouteNames.cards: (context) => const SportCardsView(),
       RouteNames.lesson: (context) {
-        final sportCard =
-            ModalRoute.of(context)!.settings.arguments as SportCard;
+        final sportCard = ModalRoute.of(context)!.settings.arguments as SportCard;
 
         return LessonView(sportCard: sportCard);
       },
       RouteNames.quizzes: (context) {
-        final quizzes =
-            ModalRoute.of(context)!.settings.arguments as List<Quiz>;
+        final quizzes = ModalRoute.of(context)!.settings.arguments as List<Quiz>;
 
         return QuizzesView(quizzes: quizzes);
       },
@@ -43,6 +42,10 @@ class Routes {
       },
       RouteNames.support: (context) => const SupportView(),
       RouteNames.privacy: (context) => const PrivacyView(),
+      RouteNames.privacyAndTerms: (context) {
+        final isTerms = ModalRoute.of(context)!.settings.arguments as bool;
+        return PrivacyTermsView(isTerms: isTerms);
+      }
     };
   }
 }
