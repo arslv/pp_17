@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "389222496385",
-    "project_id": "pp-17-8fb3e",
-    "storage_bucket": "pp-17-8fb3e.appspot.com"
+    "project_number": "537127152431",
+    "project_id": "sportquizarspp9",
+    "storage_bucket": "sportquizarspp9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:389222496385:android:654b952a3531e1c0c2b580",
+        "mobilesdk_app_id": "1:537127152431:android:b1687d98f80730c852cfda",
         "android_client_info": {
           "package_name": "com.example.pp_17"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBSlwfy8Jw8Cquk6Sv3N72Oe3Wx8BXug5U"
+          "current_key": "AIzaSyDJzhjZEhYypU27H-MdENWKOcyoXXyTxrA"
         }
       ],
       "services": {
