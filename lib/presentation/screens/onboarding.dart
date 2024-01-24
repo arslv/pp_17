@@ -62,7 +62,7 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   void increaseStep() {
     if (currentStep == 3) {
-      Navigator.of(context).pushReplacementNamed(RouteNames.mainScreen);
+      Navigator.of(context).pushReplacementNamed(RouteNames.privacy);
       return;
     }
     setState(() {

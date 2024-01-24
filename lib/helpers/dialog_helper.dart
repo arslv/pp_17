@@ -2,11 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pp_17/controllers/services/navigation/route_names.dart';
 
 class DialogHelper {
-  static var showingDialog = false;
-
-  static Future<void> showNoInternetDialog(BuildContext context) async {
-    if (!showingDialog) {
-      showingDialog = true;
+  static Future<void> showNoInternetDialog(BuildContext context) async =>
       await showCupertinoDialog(
         context: context,
         barrierDismissible: false,
@@ -18,7 +14,6 @@ class DialogHelper {
             CupertinoDialogAction(
               child: const Text('OK'),
               onPressed: () {
-                showingDialog = false;
                 Navigator.of(context).pop();
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   RouteNames.splash,
@@ -29,6 +24,4 @@ class DialogHelper {
           ],
         ),
       );
-    }
-  }
 }

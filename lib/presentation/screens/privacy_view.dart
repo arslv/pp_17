@@ -181,6 +181,6 @@ class _PrivacyViewState extends State<PrivacyView> {
 
   void _accept() {
     _databaseService.put(DatabaseKeys.acceptedPrivacy, true);
-    Navigator.of(context).pushReplacementNamed(RouteNames.onboarding);
+    Navigator.of(context).pushReplacementNamed(RouteNames.mainScreen);
   }
 }
