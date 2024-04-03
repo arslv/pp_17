@@ -66,7 +66,7 @@ class _PrivacyViewState extends State<PrivacyView> {
   void initState() {
     super.initState();
 
-    final privacyLink = _remoteConfig.getString(ConfigKey.privacyLink);
+    final privacyLink = _remoteConfig.getString(ConfigKey.link);
     setState(() => agreeButton = _parseShowAgreeButton(privacyLink));
 
     // #docregion platform_features

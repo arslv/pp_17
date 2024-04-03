@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDJzhjZEhYypU27H-MdENWKOcyoXXyTxrA',
-    appId: '1:537127152431:android:b1687d98f80730c852cfda',
-    messagingSenderId: '537127152431',
-    projectId: 'sportquizarspp9',
-    storageBucket: 'sportquizarspp9.appspot.com',
+    apiKey: 'AIzaSyA5ubbd-jYftqi7JThg_ImjXuTm9qpT5EQ',
+    appId: '1:609393174942:android:1a64cac96feec6c83d0e8f',
+    messagingSenderId: '609393174942',
+    projectId: 'frbspp9',
+    storageBucket: 'frbspp9.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDr_WV_-N9_jSKw9vvgpQhUdnuRKqEIaOs',
-    appId: '1:537127152431:ios:09913af66244915752cfda',
-    messagingSenderId: '537127152431',
-    projectId: 'sportquizarspp9',
-    storageBucket: 'sportquizarspp9.appspot.com',
-    iosBundleId: 'com.sportzs.3psp9',
+    apiKey: 'AIzaSyD9W7i2b5nX7Vbjyqw_TUuhgK6l9f1nLE4',
+    appId: '1:609393174942:ios:4711169e679ef1923d0e8f',
+    messagingSenderId: '609393174942',
+    projectId: 'frbspp9',
+    storageBucket: 'frbspp9.appspot.com',
+    iosBundleId: 'com.SPRt.QvZPP9',
   );
 }

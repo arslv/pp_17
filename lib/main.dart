@@ -42,7 +42,7 @@ class SportQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sports for 365 types of news',
+      title: 'SportIQ Challenge',
       debugShowCheckedModeBanner: false,
       routes: Routes.get(context),
       initialRoute: RouteNames.splash,
