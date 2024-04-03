@@ -42,6 +42,7 @@ workflows:
       email:
         recipients:
           - dgimai@techfinance.online
+          - emelin23g@gmail.com
         notify:
           success: true
           failure: true
